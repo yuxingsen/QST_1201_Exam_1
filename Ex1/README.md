@@ -16,8 +16,33 @@
 	}
 	// 实现以下函数，打印链表head
 	public void printLinkList(LinkList head){
+	 String s="";
+  	s+=head.value;
+  	LinkList temp=head.next;
+  	while(temp!=null){
+  		s+="->"+temp.value;
+  		temp=temp.next;
+  	}
+  	System.out.println(s);
 	}
 ```
+
+ public static Node reverseLinkList(Node head)  
+    {  
+    	Node p1= null;
+	Node p2;
+		
+	while(head!= null){
+		p2 = head.next;
+		head.next = p1;
+		p1 = head;
+		head = p2;
+			
+	}
+		
+      return p1;
+          
+    }  
 
 打印格式如下`1->2->5->3`，具体代码规定，请参考ex1.java文件。
 
