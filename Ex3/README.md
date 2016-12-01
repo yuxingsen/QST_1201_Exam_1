@@ -47,7 +47,7 @@ public class ip1_ip2 {
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(Text.class);
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
-		job.setCombinerClass(conbine.class);
+		
 		job.setNumReduceTasks(1);
 	    job.setReducerClass(reduce.class);
 		job.setOutputKeyClass(Text.class);
@@ -66,29 +66,16 @@ public class ip1_ip2 {
 		String str=value.toString();
 		 if(((FileSplit) context.getInputSplit()).getPath().getName().equals("ip_time")){
 			 String arr[]= str.split("\t",2);
-			 String  ip= arr[1]+"!!!";
-			 context.write(new Text("null"), new Text(ip));
+			
+			 context.write(new Text(arr[0]), new Text("ip1"));
 		 }else{
 			 String arr[]= str.split("\t",2);
-			 context.write(new Text("null"), new Text(arr[1]));
+			 context.write(new Text(arr[0]), new Text("ip2"));
 		 }
 	}
 	 
  }
- public static class conbine extends Reducer<Text, Text, Text, Text>{
-	 private HashSet<String> hash=new HashSet<String>();
-	@Override
-	protected void reduce(Text key, Iterable<Text> values, Context context)
-			throws IOException, InterruptedException {
-		for(Text ss:values){
-			hash.add(ss.toString());
-		}
-		for (String  sf:hash){
-			context.write(key, new Text(sf));
-		}
-	}
-	 
- }
+ 
  public static class reduce extends Reducer<Text, Text, Text, Text>{
 	 private HashSet<String> hash=new HashSet<String>();
 	 private HashSet<String> hash2=new HashSet<String>();
@@ -98,19 +85,11 @@ public class ip1_ip2 {
 			      Context context)
 			throws IOException, InterruptedException {
 		for(Text ss:values){
-			String word=ss.toString();
-			if(word.endsWith("!!!")){
-				String dd=word.replace("!!!", "").trim();
-			hash.add(dd);
-			}else{
-				hash2.add(word);
-			}
+			hash.add(ss.toString());
+			
 		}
-		for (String  sf:hash){
-			if(hash2.contains(sf)){
-				countip++;
-			}
-			context.write(new Text(countip+""), new Text(""));
+		if(hash.size()>1){
+			context.write(key, new Text(""));
 		}
 	}
 	
